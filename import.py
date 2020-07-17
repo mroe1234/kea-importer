@@ -22,6 +22,8 @@ def main(url,verbose,fin):
       csv_headings = next(info)
       for row in info:
          raw_lease += 1
+         if verbose == 3:
+           print(f"lease timestamp: {int(row[4])}, time now: {int(time.time())}")
          if int(row[4]) > int(time.time()):
             good_lease +=1
             ip = row[0]
@@ -35,6 +37,8 @@ def main(url,verbose,fin):
                   print (".",end='',flush=True)
             myjson = {'command': 'lease4-add', 'service': ['dhcp4'],'arguments': { 'subnet-id': subnet_id, 'ip-address': ip, 'hw-address': hw,'expire': expire}}
             r = requests.post(url, json=myjson)
+            if verbose == 3:
+              print(myjson)
             if verbose == 2:
                print("{"+ip+", "+hw+"} status code: "+str(r.status_code) +", result: "+r.json()[0]['text'])
             if (r.status_code == 200) and int(r.json()[0]["result"]) == 0:
